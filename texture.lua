@@ -68,11 +68,13 @@ local function create_downsample_shader(init, op, res)
 end
 
 local downsample_shaders = {
+	--box average
 	average = create_downsample_shader(
 		"0.0",
 		"accum += px;",
 		"accum / (scale_factor * scale_factor)"
 	),
+	--min/max filter
 	min = create_downsample_shader(
 		"1e6",
 		"accum = min(accum, px);",
@@ -81,6 +83,17 @@ local downsample_shaders = {
 	max = create_downsample_shader(
 		"-1e6",
 		"accum = max(accum, px);",
+		"accum"
+	),
+	--magnitude only
+	abs_min = create_downsample_shader(
+		"1e6",
+		"accum = min(accum, abs(px));",
+		"accum"
+	),
+	abs_max = create_downsample_shader(
+		"-1e6",
+		"accum = max(accum, abs(px));",
 		"accum"
 	),
 }
